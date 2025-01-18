@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InferenceJS Live Camera Feed</title>
+  <script src="https://cdn.jsdelivr.net/npm/inferencejs"></script>
+</head>
+<body>
+
+  <h1>InferenceJS Live Camera Feed</h1>
+
+  <!-- Video element to capture live camera feed -->
+  <video id="video" width="640" height="480" autoplay></video>
+
+  <script>
+    // Initialize the InferenceEngine from InferenceJS
+    const { InferenceEngine, CVImage } = inferencejs;
+    const inferEngine = new InferenceEngine();
+
+    // Start the worker for the Roboflow model
+    inferEngine
+      .startWorker("eye-xp87l", "1", "rf_q3IEhgK2QeSG0mpxLoAK")
+      .then(function(workerId) {
+        console.log("Model has loaded!");
+
+        // Access the video element
+        const video = document.getElementById("video");
+
+        // Access the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function(stream) {
+            video.srcObject = stream;
+
+            // Use a canvas to extract frames for inference
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            // Function to capture frames and run inference
+            function captureFrame() {
+              canvas.width = video.videoWidth;
+              canvas.height = video.videoHeight;
+              ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+              
+              // Convert canvas to CVImage for inference
+              const image = new CVImage(canvas);
+
+              // Perform inference on the current frame
+              inferEngine
+                .infer(workerId, image)
+                .then(function(predictions) {
+                  console.log("Predictions:", predictions);
+
+                  // Clear previous drawings on canvas
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);
+                  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                  // Draw bounding boxes and class labels on the canvas
+                  predictions.forEach(pred => {
+                    ctx.strokeStyle = "green";
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(pred.x - pred.width / 2, pred.y - pred.height / 2, pred.width, pred.height);
+                    ctx.fillStyle = "green";
+                    ctx.font = "20px Arial";
+                    ctx.fillText(pred.class, pred.x - pred.width / 2, pred.y - pred.height / 2);
+                  });
+                });
+            }
+
+            // Capture frames at regular intervals (e.g., 30fps)
+            setInterval(captureFrame, 1000 / 30);
+          })
+          .catch(function(error) {
+            console.error("Error accessing camera:", error);
+          });
+      })
+      .catch(function(error) {
+        console.error("Error loading the model:", error);
+      });
+  </script>
+
+</body>
+</html>

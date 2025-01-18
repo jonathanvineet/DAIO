@@ -1,0 +1,12 @@
+names:
+- Eyes-iris
+nc: 1
+roboflow:
+  license: CC BY 4.0
+  project: eye-xp87l
+  url: https://universe.roboflow.com/personal-dj7nt/eye-xp87l/dataset/1
+  version: 1
+  workspace: personal-dj7nt
+test: ../test/images
+train: ../train/images
+val: ../valid/images
