@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="E:\Vineet_Ideas\DAIO\myaoo\myapp\build\windows\x64\CMakeFiles\2ecdeaf321fec7e541a53782c58ee3d6\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B9E0B841-90D4-378D-8CB8-187736C1044B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

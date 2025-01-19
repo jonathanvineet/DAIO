@@ -1,0 +1,10 @@
+^E:\VINEET_IDEAS\DAIO\MYAOO\MYAPP\BUILD\WINDOWS\X64\CMAKEFILES\142DD7D577554116F56530F9228CC3E6\INSTALL_FORCE.RULE
+setlocal
+cd .
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
