@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "HelloWorld",
+            "request": "launch",
+            "mainClass": "HelloWorld",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "FPVWorld",
+            "request": "launch",
+            "mainClass": "FPVWorld",
+            "projectName": "",
+            "vmArgs": "-Djava.library.path=G:/Vineet_Ideas/DAIO/3D-Letters/lwjgl-release-3.3.6-custom/native/windows"
+        }
+    ]
+}
