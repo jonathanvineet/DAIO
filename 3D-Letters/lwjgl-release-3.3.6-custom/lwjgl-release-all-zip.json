@@ -3,6 +3,7 @@
   "mode": "zip",
   "selectedAddons": [],
   "platform": [
+    "macos",
     "windows"
   ],
   "descriptions": false,

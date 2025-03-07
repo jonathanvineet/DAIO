@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Pyramid3D",
+            "request": "launch",
+            "mainClass": "com.example.Pyramid3D",
+            "projectName": "3D-Letters",
+            "vmArgs": "-Djava.library.path=G:/Vineet_Ideas/DAIO/3D-Letters/lwjgl-release-3.3.6-custom/native/windows"
+        },
+        {
+            "type": "java",
             "name": "HelloWorld",
             "request": "launch",
             "mainClass": "HelloWorld",
