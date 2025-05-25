@@ -288,3 +288,9 @@ public class Pyramid3D {
 -cp /var/folders/5k/pq2g97cx76vgrnpw0g3v3_f80000gn/T/cp_ccekbbcd2tu1s5llref3v8lhx.jar \
 com.example.Pyramid3D
  */
+
+ /*
+ java -XstartOnFirstThread \
+    -Dorg.lwjgl.librarypath=target/natives \
+    -cp "target/classes:$(find ~/.m2/repository/org/lwjgl ~/.m2/repository/org/joml -name '*.jar' | tr '\n' ':')" \
+    com.example.Pyramid3D */

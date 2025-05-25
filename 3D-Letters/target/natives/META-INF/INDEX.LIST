@@ -1,0 +1,17 @@
+JarIndex-Version: 1.0
+
+lwjgl-opengl-natives-macos-arm64.jar
+META-INF
+META-INF/macos
+META-INF/macos/arm64
+META-INF/macos/arm64/org
+META-INF/macos/arm64/org/lwjgl
+META-INF/macos/arm64/org/lwjgl/opengl
+META-INF/versions
+META-INF/versions/11
+macos
+macos/arm64
+macos/arm64/org
+macos/arm64/org/lwjgl
+macos/arm64/org/lwjgl/opengl
+

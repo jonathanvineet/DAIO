@@ -7,86 +7,65 @@
     <artifactId>3D-Letters</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <dependencies>
-        <!-- LWJGL Core -->
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
-            <version>3.3.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-glfw</artifactId>
-            <version>3.3.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-opengl</artifactId>
-            <version>3.3.6</version>
-        </dependency>
+<dependencies>
+    <!-- LWJGL Core -->
+    <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>3.3.6</version>
+    </dependency>
+    <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>3.3.6</version>
+    </dependency>
+    <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-opengl</artifactId>
+        <version>3.3.6</version>
+    </dependency>
 
-        <!-- LWJGL Natives -->
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
-            <version>3.3.6</version>
-            <classifier>natives-windows</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-glfw</artifactId>
-            <version>3.3.6</version>
-            <classifier>natives-windows</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-opengl</artifactId>
-            <version>3.3.6</version>
-            <classifier>natives-windows</classifier>
-        </dependency>
+    <!-- LWJGL Natives for Apple Silicon -->
+    <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl</artifactId>
+        <version>3.3.6</version>
+        <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-glfw</artifactId>
+        <version>3.3.6</version>
+        <classifier>natives-macos-arm64</classifier>
+    </dependency>
+    <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-opengl</artifactId>
+        <version>3.3.6</version>
+        <classifier>natives-macos-arm64</classifier>
+    </dependency>
 
-        <!-- JOML for Matrix Manipulation -->
-        <dependency>
-            <groupId>org.joml</groupId>
-            <artifactId>joml</artifactId>
-            <version>1.10.8</version>
-        </dependency>
-        <dependency>
-    <groupId>org.lwjgl</groupId>
-    <artifactId>lwjgl</artifactId>
-    <version>3.3.6</version>
-    <classifier>natives-macos</classifier>
-</dependency>
-<dependency>
-    <groupId>org.lwjgl</groupId>
-    <artifactId>lwjgl-glfw</artifactId>
-    <version>3.3.6</version>
-    <classifier>natives-macos</classifier>
-</dependency>
-<dependency>
-    <groupId>org.lwjgl</groupId>
-    <artifactId>lwjgl-opengl</artifactId>
-    <version>3.3.6</version>
-    <classifier>natives-macos</classifier>
-</dependency>
-<dependency>
-    <groupId>org.lwjgl</groupId>
-    <artifactId>lwjgl</artifactId>
-    <version>3.3.6</version>
-    <classifier>natives-linux</classifier>
-</dependency>
-<dependency>
-    <groupId>org.lwjgl</groupId>
-    <artifactId>lwjgl-glfw</artifactId>
-    <version>3.3.6</version>
-    <classifier>natives-linux</classifier>
-</dependency>
-<dependency>
-    <groupId>org.lwjgl</groupId>
-    <artifactId>lwjgl-opengl</artifactId>
-    <version>3.3.6</version>
-    <classifier>natives-linux</classifier>
-</dependency>
+    <!-- JOML (Matrix Library) -->
+    <dependency>
+        <groupId>org.joml</groupId>
+        <artifactId>joml</artifactId>
+        <version>1.10.8</version>
+    </dependency>
+</dependencies>
 
-    </dependencies>
+    <build>
+    <plugins>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.5.0</version>
+            <configuration>
+                <mainClass>com.example.Pyramid3D</mainClass>
+                <arguments>
+                    <argument>-XstartOnFirstThread</argument>
+                </arguments>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 </project>
