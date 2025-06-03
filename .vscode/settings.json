@@ -2,5 +2,6 @@
     "cSpell.words": [
         "ursina"
     ],
-    "cmake.sourceDirectory": "E:/Vineet_Ideas/DAIO/camera_app/windows/flutter"
+    "cmake.sourceDirectory": "E:/Vineet_Ideas/DAIO/camera_app/windows/flutter",
+    "dart.showTodos": false
 }
