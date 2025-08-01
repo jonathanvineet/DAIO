@@ -11,7 +11,7 @@ stopped = False
 
 def capture_stream():
     global frame, stopped
-    cap = cv2.VideoCapture("http://192.168.1.19/stream")
+    cap = cv2.VideoCapture("http://172.20.10.2/stream")
     while not stopped:
         ret, img = cap.read()
         if not ret:

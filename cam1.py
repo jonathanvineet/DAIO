@@ -6,7 +6,7 @@ from PIL import Image
 import threading
 
 class ESP32_CAM_Stream:
-    def __init__(self, ip_address="192.168.1.19"):
+    def __init__(self, ip_address="172.20.10.2"):
         self.frame = None
         self.stopped = False
         self.stream = None
@@ -54,7 +54,7 @@ class ESP32_CAM_Stream:
 
 def main():
     # Replace with your ESP32-CAM's IP
-    esp_ip = "192.168.1.19"
+    esp_ip = "172.20.10.2"
     
     print(f"Starting ESP32-CAM stream from {esp_ip}")
     stream = ESP32_CAM_Stream(esp_ip).start()
