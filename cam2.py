@@ -1,10 +1,11 @@
 import cv2
+import torch
 from yolov5 import YOLOv5
 import threading
 import numpy as np
-
-# Load model once
-model = YOLOv5("/Users/vine/elco/DAIO/yolov5/runs/train/eye_model2/weights/best.pt", device="cpu")
+import torch
+torch.serialization.add_safe_globals(['models.yolo.Model'])
+model = YOLOv5("F:/iris/yolov5/yolov5s.pt", device="cpu")
 
 frame = None
 lock = threading.Lock()
