@@ -1,11 +1,17 @@
 import cv2
 import torch
-from yolov5 import YOLOv5
 import threading
 import numpy as np
-import torch
-torch.serialization.add_safe_globals(['models.yolo.Model'])
-model = YOLOv5("F:/iris/yolov5/yolov5s.pt", device="cpu")
+import os
+
+# Set environment variable to disable safety checks for loading YOLOv5 models
+os.environ['TORCH_DISABLE_UNSAFE_SERIALIZATION'] = '1'
+
+# Import YOLOv5 after setting environment variable
+from yolov5 import YOLOv5
+
+# Use the model in the current directory
+model = YOLOv5("/Users/vine/elco/DAIO/yolov5s.pt", device="cpu")
 
 frame = None
 lock = threading.Lock()
