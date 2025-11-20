@@ -4,115 +4,114 @@ import threading
 import numpy as np
 import os
 import sys
+import time
 
 # Add YOLOv5 directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'yolov5'))
 
-# Import YOLOv5 modules directly
-from models.yolo import Model
-from models.experimental import attempt_load
 from utils.general import non_max_suppression, scale_boxes
 from utils.torch_utils import select_device
 
-# Load model with weights_only=False (to avoid serialization security issues)
-device = select_device('cpu')
-model_path = '/Users/vine/elco/DAIO/yolov5s.pt'
-model = torch.load(model_path, map_location=device, weights_only=False)
-model = model['model'].float().eval()  # extract model from checkpoint
+# Load YOLO model
+device = select_device("cpu")
+ckpt = torch.load("/Users/vine/elco/DAIO/yolov5m.pt", map_location=device, weights_only=False)
+model = ckpt["model"].float().eval()
 
+# SHARED VARIABLES
 frame = None
+display_frame = None
 lock = threading.Lock()
 stopped = False
 
-def capture_stream():
-    global frame, stopped
-    # Try to use the default camera (0) instead of IP camera
+def open_webcam():
     cap = cv2.VideoCapture(0)
-    
+    # Try alternate backend on macOS if default fails
     if not cap.isOpened():
-        print("Error: Could not open camera. Trying camera 1...")
-        cap = cv2.VideoCapture(1)  # Try camera 1 if camera 0 fails
-    
-    if not cap.isOpened():
-        print("Error: Could not open any camera. Exiting...")
+        cap = cv2.VideoCapture(0, cv2.CAP_AVFOUNDATION)
+
+    if cap.isOpened():
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+        return cap
+
+    return None
+
+def capture_thread_fn():
+    global frame, stopped
+    cap = open_webcam()
+    if cap is None:
+        print("No webcam found")
         stopped = True
         return
-        
-    print("Camera opened successfully!")
+
+    print("Using webcam index 0")
     while not stopped:
         ret, img = cap.read()
-        if not ret:
-            print("Error reading frame")
-            continue
-        with lock:
-            frame = img
+        if ret:
+            img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+            with lock:
+                frame = img
+        time.sleep(0.005)
 
-def detection_loop():
-    global frame, stopped
+    cap.release()
+
+def detection_thread_fn():
+    global frame, display_frame, stopped
+
     while not stopped:
         with lock:
             if frame is None:
+                time.sleep(0.01)
                 continue
             img = frame.copy()
 
-        # Process image for model
-        img_for_model = cv2.resize(img, (640, 640))
-        img_for_model = img_for_model[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, HWC to CHW
-        img_for_model = np.ascontiguousarray(img_for_model)
-        img_for_model = torch.from_numpy(img_for_model).to(device)
-        img_for_model = img_for_model.float() / 255.0
-        if img_for_model.ndimension() == 3:
-            img_for_model = img_for_model.unsqueeze(0)
-            
-        # Inference
-        with torch.no_grad():
-            pred = model(img_for_model)[0]
-        
-        # Apply NMS
-        pred = non_max_suppression(pred, 0.25, 0.45)
-        
-        # Process detections
-        img_display = img.copy()
-        for i, det in enumerate(pred):  # detections per image
-            if len(det):
-                # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_boxes(img_for_model.shape[2:], det[:, :4], img_display.shape).round()
-                
-                # Draw detections
-                for *xyxy, conf, cls in det:
-                    if conf > 0.5:  # confidence threshold
-                        # Get bounding box coordinates
-                        x1, y1, x2, y2 = int(xyxy[0]), int(xyxy[1]), int(xyxy[2]), int(xyxy[3])
-                        
-                        # Calculate eye center
-                        center_x = (x1 + x2) // 2
-                        center_y = (y1 + y2) // 2
-                        
-                        # Draw bounding box
-                        cv2.rectangle(img_display, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        
-        # Display results
-        cv2.imshow('YOLOv5 Object Detection', img_display)
-        if cv2.waitKey(1) == ord('q'):
-            stopped = True
+        # format for YOLO
+        inp = cv2.resize(img, (640, 640))
+        inp = inp[:, :, ::-1].transpose(2, 0, 1)
+        inp = np.ascontiguousarray(inp)
+        inp = torch.from_numpy(inp).float().to(device) / 255
+        inp = inp.unsqueeze(0)
 
-if __name__ == '__main__':
-    # Start capture thread
-    capture_thread = threading.Thread(target=capture_stream)
-    capture_thread.daemon = True
-    capture_thread.start()
-    
-    # Start detection thread
-    detection_thread = threading.Thread(target=detection_loop)
-    detection_thread.daemon = True
-    detection_thread.start()
-    
-    try:
-        while not stopped:
-            # Keep the main thread alive
-            if cv2.waitKey(1) == ord('q'):
-                stopped = True
-    except KeyboardInterrupt:
-        stopped = True
-    finally:
-        cv2.destroyAllWindows()
+        with torch.no_grad():
+            pred = model(inp)[0]
+
+        pred = non_max_suppression(pred, 0.25, 0.45)
+
+        out = img.copy()
+        for det in pred:
+            if len(det):
+                det[:, :4] = scale_boxes(inp.shape[2:], det[:, :4], out.shape).round()
+
+                for *xyxy, conf, cls in det:
+                    if conf > 0.5:
+                        x1, y1, x2, y2 = map(int, xyxy)
+                        cv2.rectangle(out, (x1, y1), (x2, y2), (0,255,0), 2)
+
+        with lock:
+            display_frame = out
+
+        time.sleep(0.001)
+
+
+if __name__ == "__main__":
+
+    # Start threads
+    threading.Thread(target=capture_thread_fn, daemon=True).start()
+    threading.Thread(target=detection_thread_fn, daemon=True).start()
+
+    # MAIN THREAD = GUI ONLY
+    cv2.namedWindow("YOLOv5", cv2.WINDOW_NORMAL)
+
+    while not stopped:
+        with lock:
+            show = None if display_frame is None else display_frame.copy()
+
+        if show is not None:
+            cv2.imshow("YOLOv5", show)
+
+        key = cv2.waitKey(1)
+        if key == ord("q"):
+            stopped = True
+            break
+
+    cv2.destroyAllWindows()
